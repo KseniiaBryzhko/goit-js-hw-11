@@ -1,8 +1,8 @@
 import './css/styles.css';
-import { fetchImages } from './fetchImages';
 import Notiflix from 'notiflix';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
+import axios from 'axios';
 
 const searchFormEl = document.querySelector('#search-form');
 const searchInputEl = document.querySelector('input');
@@ -28,6 +28,22 @@ searchFormEl.addEventListener('submit', handleSearchImage);
 //       console.log(error);
 //     });
 // }
+const fetchImages = async searchQuery => {
+  const response = await axios({
+    method: 'get',
+    url: 'https://pixabay.com/api',
+    params: {
+      key: '34521727-b40265d11824baf1c84600c97',
+      q: `${searchQuery}`,
+      image_type: 'photo',
+      orientation: 'horizontal',
+      safesearch: 'true',
+      page: '1',
+      per_page: '40',
+    },
+  });
+  return response.data;
+};
 
 async function handleSearchImage(event) {
   event.preventDefault();
