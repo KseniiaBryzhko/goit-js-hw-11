@@ -6,28 +6,16 @@ import axios from 'axios';
 
 const searchFormEl = document.querySelector('#search-form');
 const searchInputEl = document.querySelector('input');
-const searchBtnEl = document.querySelector('button');
+const searchBtnEl = document.querySelector('[type="submit"]');
+const loadMoreBtnEl = document.querySelector('.load-more');
 const galleryEl = document.querySelector('.gallery');
+
+loadMoreBtnEl.classList.add('is-hidden');
 
 searchFormEl.addEventListener('submit', handleSearchImage);
 
-// function handleSearchImage(event) {
-//   event.preventDefault();
-//   const searchQuery = searchInputEl.value.toLowerCase().trim();
-//   console.log(searchQuery);
+let page = 1;
 
-//   fetchImages(searchQuery)
-//     .then(result => {
-//       Notiflix.Notify.success(`Hooray! We found ${result.totalHits} images.`);
-//       showFoundImages(result);
-//     })
-//     .catch(error => {
-//       Notiflix.Notify.failure(
-//         'Sorry, there are no images matching your search query. Please try again.'
-//       );
-//       console.log(error);
-//     });
-// }
 const fetchImages = async searchQuery => {
   const response = await axios({
     method: 'get',
@@ -38,7 +26,7 @@ const fetchImages = async searchQuery => {
       image_type: 'photo',
       orientation: 'horizontal',
       safesearch: 'true',
-      page: '1',
+      page: `${page}`,
       per_page: '40',
     },
   });
@@ -52,14 +40,23 @@ async function handleSearchImage(event) {
 
   try {
     const result = await fetchImages(searchQuery);
-    Notiflix.Notify.success(`Hooray! We found ${result.totalHits} images.`);
-    showFoundImages(result);
+
+    if (result.hits.length === 0) {
+      Notiflix.Notify.failure(
+        'Sorry, there are no images matching your search query. Please try again.'
+      );
+    } else {
+      Notiflix.Notify.success(`Hooray! We found ${result.totalHits} images.`);
+      showFoundImages(result);
+      page += 1;
+      loadMoreBtnEl.classList.remove('is-hidden');
+    }
   } catch (error) {
-    Notiflix.Notify.failure(
-      'Sorry, there are no images matching your search query. Please try again.'
-    );
+    Notiflix.Notify.failure('Keep calm and try again.');
   }
 }
+
+loadMoreBtnEl.addEventListener('click', handleSearchImage);
 
 function showFoundImages(result) {
   const imageInfo = result.hits
