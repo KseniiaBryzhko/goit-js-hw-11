@@ -15,6 +15,7 @@ loadMoreBtnEl.classList.add('is-hidden');
 searchFormEl.addEventListener('submit', handleSearchImage);
 
 let page = 1;
+const perPage = 40;
 
 const fetchImages = async searchQuery => {
   const response = await axios({
@@ -27,7 +28,7 @@ const fetchImages = async searchQuery => {
       orientation: 'horizontal',
       safesearch: 'true',
       page: `${page}`,
-      per_page: '40',
+      per_page: `${perPage}`,
     },
   });
   return response.data;
@@ -38,6 +39,11 @@ async function handleSearchImage(event) {
   const searchQuery = searchInputEl.value.toLowerCase().trim();
   console.log(searchQuery);
 
+  if (!searchQuery) {
+    clearPage();
+    return;
+  }
+
   try {
     const result = await fetchImages(searchQuery);
 
@@ -46,10 +52,18 @@ async function handleSearchImage(event) {
         'Sorry, there are no images matching your search query. Please try again.'
       );
     } else {
+      clearPage();
       Notiflix.Notify.success(`Hooray! We found ${result.totalHits} images.`);
       showFoundImages(result);
       page += 1;
       loadMoreBtnEl.classList.remove('is-hidden');
+
+      if (result.totalHits <= page * perPage) {
+        loadMoreBtnEl.classList.add('is-hidden');
+        Notiflix.Notify.failure(
+          `We're sorry, but you've reached the end of search results.`
+        );
+      }
     }
   } catch (error) {
     Notiflix.Notify.failure('Keep calm and try again.');
@@ -57,6 +71,11 @@ async function handleSearchImage(event) {
 }
 
 loadMoreBtnEl.addEventListener('click', handleSearchImage);
+
+function clearPage() {
+  galleryEl.innerHTML = '';
+  loadMoreBtnEl.classList.add('is-hidden');
+}
 
 function showFoundImages(result) {
   const imageInfo = result.hits
@@ -84,9 +103,12 @@ function showFoundImages(result) {
     )
     .join('');
   galleryEl.insertAdjacentHTML('beforeend', imageInfo);
-  console.log(imageInfo);
   return imageInfo;
 }
 
 const lightbox = new SimpleLightbox('.gallery a');
 lightbox.refresh();
+
+// const gallery = $('.gallery a').simpleLightbox();
+
+// gallery.refresh();
