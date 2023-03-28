@@ -1,14 +1,15 @@
 import './css/styles.css';
-import Notiflix from 'notiflix';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
+import Notiflix from 'notiflix';
 import axios from 'axios';
+import OnlyScroll from 'only-scrollbar';
 
 const searchFormEl = document.querySelector('#search-form');
 const searchInputEl = document.querySelector('input');
 const searchBtnEl = document.querySelector('[type="submit"]');
 const loadMoreBtnEl = document.querySelector('.load-more');
-const galleryEl = document.querySelector('.gallery');
+const gallery = document.querySelector('.gallery');
 
 loadMoreBtnEl.classList.add('is-hidden');
 
@@ -57,6 +58,7 @@ async function handleSearchImage(event) {
       showFoundImages(result);
       page += 1;
       loadMoreBtnEl.classList.remove('is-hidden');
+      scrollPage();
 
       if (result.totalHits <= page * perPage) {
         loadMoreBtnEl.classList.add('is-hidden');
@@ -73,7 +75,7 @@ async function handleSearchImage(event) {
 loadMoreBtnEl.addEventListener('click', handleSearchImage);
 
 function clearPage() {
-  galleryEl.innerHTML = '';
+  gallery.innerHTML = '';
   loadMoreBtnEl.classList.add('is-hidden');
 }
 
@@ -92,23 +94,36 @@ function showFoundImages(result) {
         return `<a class="gallery__item" href="${largeImageURL}">
         <div class="photo-card"><img src="${webformatURL}" alt="${tags}" loading="lazy" />
         <div class="info">
-        <p class="info-item"><b>Likes: ${likes}</b></p>
-        <p class="info-item"><b>Views: ${views}</b></p>
-        <p class="info-item"><b>Comments: ${comments}</b></p>
-        <p class="info-item"><b>Downloads: ${downloads}</b></p>
+        <p class="info-item"><b>Likes: </b>${likes}</p>
+        <p class="info-item"><b>Views: </b>${views}</p>
+        <p class="info-item"><b>Comments: </b>${comments}</p>
+        <p class="info-item"><b>Downloads: </b>${downloads}</p>
         </div>
         </div>
         </a>`;
       }
     )
     .join('');
-  galleryEl.insertAdjacentHTML('beforeend', imageInfo);
+  gallery.insertAdjacentHTML('beforeend', imageInfo);
+
+  const lightbox = new SimpleLightbox('.gallery a', {
+    captionsData: 'alt',
+    captionPosition: 'bottom',
+    captionDelay: 250,
+  });
+  lightbox.refresh();
+
   return imageInfo;
 }
 
-const lightbox = new SimpleLightbox('.gallery a');
-lightbox.refresh();
+function scrollPage() {
+  const { height: cardHeight } =
+    gallery.firstElementChild.getBoundingClientRect();
 
-// const gallery = $('.gallery a').simpleLightbox();
+  window.scrollBy({
+    top: cardHeight * 2,
+    behavior: 'smooth',
+  });
+}
 
-// gallery.refresh();
+// const scroll = new OnlyScroll(document.scrollingElement);

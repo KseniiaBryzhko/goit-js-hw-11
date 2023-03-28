@@ -34,6 +34,7 @@ body {
 .gallery__item {
   max-width: calc((100% - 30px) / 4);
   text-decoration: none;
+  /* max-height: 228px; */
 }
 
 img {
@@ -43,11 +44,11 @@ img {
 
 .info {
   display: flex;
-  gap: 1px;
+  gap: 2px;
 }
 
 .info-item {
-  max-width: calc((100% - 3px) / 4);
-  font-size: 12px;
+  font-size: 14px;
+  text-align: center;
   color: black;
 }
