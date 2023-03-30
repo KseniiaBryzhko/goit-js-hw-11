@@ -9,12 +9,18 @@
 </head>
 
 <body>
-  <form class="search-form" id="search-form">
-    <input type="text" name="searchQuery" autocomplete="off" placeholder="Search images..." />
-    <button type="submit">Search</button>
-    <div class="gallery"></div>
-    <button type="button" class="load-more">Load more</button>
-  </form>
+  <header class="header">
+    <div class="container header-container">
+      <form class="search-form" id="search-form">
+        <input class="search-form__input" type="text" name="searchQuery" autocomplete="off"
+          placeholder="Search images..." />
+        <button class="search-form__btn" type="submit">Search</button>
+      </form>
+    </div>
+  </header>
+
+  <div class="gallery"></div>
+  <button type="button" class="load-more">Load more</button>
 
   <script src="index.js" type="module"></script>
 

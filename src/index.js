@@ -36,48 +36,6 @@ async function fetchImages(searchQuery) {
   return data;
 }
 
-// const fetchImages = async searchQuery => {
-//   const response = await axios.get(`${BASE_URL}/?key=${API_KEY}`, {
-//     params: {
-//       q: `${searchQuery}`,
-//       image_type: 'photo',
-//       orientation: 'horizontal',
-//       safesearch: 'true',
-//       page: `${page}`,
-//       per_page: `${perPage}`,
-//     },
-//   });
-//   return response.data;
-// };
-
-// const getUsers = () => axios.get(`${BASE_URL}/users`);
-
-// async function getUser() {
-//   try {
-//     const response = await axios.get('/user?ID=12345');
-//     console.log(response);
-//   } catch (error) {
-//     console.error(error);
-//   }
-// }
-
-// const fetchImages = async searchQuery => {
-//   const response = await axios({
-//     method: 'get',
-//     url: 'https://pixabay.com/api',
-//     params: {
-//       key: '34521727-b40265d11824baf1c84600c97',
-//       q: `${searchQuery}`,
-//       image_type: 'photo',
-//       orientation: 'horizontal',
-//       safesearch: 'true',
-//       page: `${page}`,
-//       per_page: `${perPage}`,
-//     },
-//   });
-//   return response.data;
-// };
-
 async function handleSearchImage(event) {
   event.preventDefault();
   const searchQuery = searchInputEl.value.toLowerCase().trim();
@@ -149,11 +107,7 @@ function showFoundImages(result) {
     .join('');
   gallery.insertAdjacentHTML('beforeend', imageInfo);
 
-  const lightbox = new SimpleLightbox('.gallery a', {
-    captionsData: 'alt',
-    captionPosition: 'bottom',
-    captionDelay: 250,
-  });
+  const lightbox = new SimpleLightbox('.gallery a');
   lightbox.refresh();
 
   return imageInfo;
