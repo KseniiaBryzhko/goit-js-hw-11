@@ -18,34 +18,38 @@ searchFormEl.addEventListener('submit', handleSearchImage);
 let page = 1;
 const perPage = 40;
 
-const BASE_URL = 'https://pixabay.com/api';
+axios.defaults.baseURL = 'https://pixabay.com/api/';
 const API_KEY = '34521727-b40265d11824baf1c84600c97';
 
-const fetchImages = async searchQuery => {
-  const response = await axios.get(`${BASE_URL}/?key=${API_KEY}`, {
-    params: {
-      q: `${searchQuery}`,
-      image_type: 'photo',
-      orientation: 'horizontal',
-      safesearch: 'true',
-      page: `${page}`,
-      per_page: `${perPage}`,
-    },
-  });
-  return response.data;
-};
-//  fetchPhotos() {
-//     return instance.get('/search/photos', {
-//       params: {
-//         query: this.query,
-//         page: this.page,
-//         per_page: 12,
-//         color: 'black_and_white',
-//         client_id: this.#API_KEY,
-//       },
-//     });
-//   }
-// }
+async function fetchImages(searchQuery) {
+  const params = {
+    q: `${searchQuery}`,
+    image_type: 'photo',
+    orientation: 'horizontal',
+    safesearch: 'true',
+    page: `${page}`,
+    per_page: `${perPage}`,
+  };
+  const urlAXIOS = `?key=${API_KEY}`;
+
+  const { data } = await axios.get(urlAXIOS, { params });
+  return data;
+}
+
+// const fetchImages = async searchQuery => {
+//   const response = await axios.get(`${BASE_URL}/?key=${API_KEY}`, {
+//     params: {
+//       q: `${searchQuery}`,
+//       image_type: 'photo',
+//       orientation: 'horizontal',
+//       safesearch: 'true',
+//       page: `${page}`,
+//       per_page: `${perPage}`,
+//     },
+//   });
+//   return response.data;
+// };
+
 // const getUsers = () => axios.get(`${BASE_URL}/users`);
 
 // async function getUser() {
