@@ -3,11 +3,9 @@ import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 import Notiflix from 'notiflix';
 import axios from 'axios';
-import OnlyScroll from 'only-scrollbar';
 
 const searchFormEl = document.querySelector('#search-form');
 const searchInputEl = document.querySelector('input');
-const searchBtnEl = document.querySelector('[type="submit"]');
 const loadMoreBtnEl = document.querySelector('.load-more');
 const gallery = document.querySelector('.gallery');
 
@@ -55,10 +53,16 @@ async function handleSearchImage(event) {
       );
     } else {
       clearPage();
-      Notiflix.Notify.success(`Hooray! We found ${result.totalHits} images.`);
+      if (page === 1) {
+        Notiflix.Notify.success(`Hooray! We found ${result.totalHits} images.`);
+      }
       showFoundImages(result);
       page += 1;
       loadMoreBtnEl.classList.remove('is-hidden');
+
+      const lightbox = new SimpleLightbox('.gallery a');
+      lightbox.refresh();
+
       scrollPage();
 
       if (result.totalHits <= page * perPage) {
@@ -107,20 +111,16 @@ function showFoundImages(result) {
     .join('');
   gallery.insertAdjacentHTML('beforeend', imageInfo);
 
-  const lightbox = new SimpleLightbox('.gallery a');
-  lightbox.refresh();
-
   return imageInfo;
 }
 
 function scrollPage() {
-  const { height: cardHeight } =
-    gallery.firstElementChild.getBoundingClientRect();
+  const { height: cardHeight } = document
+    .querySelector('.gallery')
+    .firstElementChild.getBoundingClientRect();
 
   window.scrollBy({
     top: cardHeight * 2,
     behavior: 'smooth',
   });
 }
-
-// const scroll = new OnlyScroll(document.scrollingElement);
