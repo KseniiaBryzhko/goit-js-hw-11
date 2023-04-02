@@ -2,7 +2,8 @@ import './css/styles.css';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 import Notiflix from 'notiflix';
-import axios from 'axios';
+import { page, perPage, API_KEY, fetchImages, axios } from './api';
+// import showFoundImages from './markup';
 
 const searchFormEl = document.querySelector('#search-form');
 const searchInputEl = document.querySelector('input');
@@ -12,27 +13,7 @@ const gallery = document.querySelector('.gallery');
 loadMoreBtnEl.classList.add('is-hidden');
 
 searchFormEl.addEventListener('submit', handleSearchImage);
-
-let page = 1;
-const perPage = 40;
-
-axios.defaults.baseURL = 'https://pixabay.com/api/';
-const API_KEY = '34521727-b40265d11824baf1c84600c97';
-
-async function fetchImages(searchQuery) {
-  const params = {
-    q: `${searchQuery}`,
-    image_type: 'photo',
-    orientation: 'horizontal',
-    safesearch: 'true',
-    page: `${page}`,
-    per_page: `${perPage}`,
-  };
-  const urlAXIOS = `?key=${API_KEY}`;
-
-  const { data } = await axios.get(urlAXIOS, { params });
-  return data;
-}
+loadMoreBtnEl.addEventListener('click', handleLoadMore);
 
 async function handleSearchImage(event) {
   event.preventDefault();
@@ -48,6 +29,7 @@ async function handleSearchImage(event) {
     const result = await fetchImages(searchQuery);
 
     if (result.hits.length === 0) {
+      clearPage();
       Notiflix.Notify.failure(
         'Sorry, there are no images matching your search query. Please try again.'
       );
@@ -60,7 +42,11 @@ async function handleSearchImage(event) {
       page += 1;
       loadMoreBtnEl.classList.remove('is-hidden');
 
-      const lightbox = new SimpleLightbox('.gallery a');
+      const lightbox = new SimpleLightbox('.gallery a', {
+        captionsData: 'alt',
+        captionPosition: 'bottom',
+        captionDelay: 250,
+      });
       lightbox.refresh();
 
       scrollPage();
@@ -74,10 +60,35 @@ async function handleSearchImage(event) {
     }
   } catch (error) {
     Notiflix.Notify.failure('Keep calm and try again.');
+    console.log(error);
   }
 }
 
-loadMoreBtnEl.addEventListener('click', handleSearchImage);
+async function handleLoadMore() {
+  const searchQuery = searchInputEl.value.toLowerCase().trim();
+  const result = await fetchImages(searchQuery);
+
+  if (result.hits.length > 0) {
+    showFoundImages(result);
+    currentPage += 1;
+
+    const lightbox = new SimpleLightbox('.gallery a', {
+      captionsData: 'alt',
+      captionPosition: 'bottom',
+      captionDelay: 250,
+    });
+    lightbox.refresh();
+
+    scrollPage();
+
+    if (result.totalHits <= currentPage * perPage) {
+      loadMoreBtnEl.classList.add('is-hidden');
+      Notiflix.Notify.failure(
+        `We're sorry, but you've reached the end of search results.`
+      );
+    }
+  }
+}
 
 function clearPage() {
   gallery.innerHTML = '';
@@ -109,6 +120,7 @@ function showFoundImages(result) {
       }
     )
     .join('');
+
   gallery.insertAdjacentHTML('beforeend', imageInfo);
 
   return imageInfo;
