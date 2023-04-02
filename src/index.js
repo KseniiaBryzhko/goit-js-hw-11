@@ -3,7 +3,6 @@ import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 import Notiflix from 'notiflix';
 import { page, perPage, API_KEY, fetchImages, axios } from './api';
-// import showFoundImages from './markup';
 
 const searchFormEl = document.querySelector('#search-form');
 const searchInputEl = document.querySelector('input');
@@ -18,7 +17,6 @@ loadMoreBtnEl.addEventListener('click', handleLoadMore);
 async function handleSearchImage(event) {
   event.preventDefault();
   const searchQuery = searchInputEl.value.toLowerCase().trim();
-  console.log(searchQuery);
 
   if (!searchQuery) {
     clearPage();
@@ -70,7 +68,7 @@ async function handleLoadMore() {
 
   if (result.hits.length > 0) {
     showFoundImages(result);
-    currentPage += 1;
+    page += 1;
 
     const lightbox = new SimpleLightbox('.gallery a', {
       captionsData: 'alt',
@@ -81,7 +79,7 @@ async function handleLoadMore() {
 
     scrollPage();
 
-    if (result.totalHits <= currentPage * perPage) {
+    if (result.totalHits <= page * perPage) {
       loadMoreBtnEl.classList.add('is-hidden');
       Notiflix.Notify.failure(
         `We're sorry, but you've reached the end of search results.`

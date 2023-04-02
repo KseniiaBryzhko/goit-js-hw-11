@@ -39,6 +39,8 @@ body {
   max-width: calc((100% - 30px) / 4);
   text-decoration: none;
   box-shadow: 10px 10px 18px -12px rgb(115, 120, 175);
+  border-bottom-right-radius: 8px;
+  border-bottom-left-radius: 8px;
 }
 
 img {
@@ -46,6 +48,8 @@ img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  border-top-right-radius: 8px;
+  border-top-left-radius: 8px;
 }
 
 .photo-card {
