@@ -79,7 +79,7 @@ async function handleLoadMore() {
 
     scrollPage();
 
-    if (result.totalHits <= page * perPage) {
+    if (result.totalHits <= currentPage * perPage) {
       loadMoreBtnEl.classList.add('is-hidden');
       Notiflix.Notify.failure(
         `We're sorry, but you've reached the end of search results.`
