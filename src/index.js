@@ -37,7 +37,6 @@ async function handleSearchImage(event) {
         Notiflix.Notify.success(`Hooray! We found ${result.totalHits} images.`);
       }
       showFoundImages(result);
-      page += 1;
       loadMoreBtnEl.classList.remove('is-hidden');
 
       const lightbox = new SimpleLightbox('.gallery a', {
