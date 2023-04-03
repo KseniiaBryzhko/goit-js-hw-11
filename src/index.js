@@ -67,7 +67,6 @@ async function handleLoadMore() {
 
   if (result.hits.length > 0) {
     showFoundImages(result);
-    page += 1;
 
     const lightbox = new SimpleLightbox('.gallery a', {
       captionsData: 'alt',
