@@ -16,10 +16,12 @@ loadMoreBtnEl.addEventListener('click', handleLoadMore);
 
 async function handleSearchImage(event) {
   event.preventDefault();
+
   const searchQuery = searchInputEl.value.toLowerCase().trim();
 
   if (!searchQuery) {
     clearPage();
+    Notiflix.Notify.failure(`Please, enter your request in the field.`);
     return;
   }
 
